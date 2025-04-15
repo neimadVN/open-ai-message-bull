@@ -41,6 +41,7 @@ export class AssistantMessageQueue {
       lockDuration: 300000,
       removeOnComplete: true,
       handleRequiresAction: null,
+      handleRunCompleted: null,
       ...options
     } as Required<AssistantMessageQueueOptions>;
 
@@ -403,13 +404,21 @@ export class AssistantMessageQueue {
         await newerJobs[0].promote();
       }
       
-      return {
+      // Create result object
+      const result: ProcessingResult = {
         threadId,
         messagesProcessed: jobs.length,
         processedJobIds: jobIds,
         runId: run.id,
         status
       };
+      
+      // Call handleRunCompleted if it exists
+      if (this.options.handleRunCompleted) {
+        await this.options.handleRunCompleted(threadId, run.id, result);
+      }
+      
+      return result;
       
     } catch (error) {
       throw error;

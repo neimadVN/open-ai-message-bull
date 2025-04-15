@@ -87,6 +87,19 @@ export interface AssistantMessageQueueOptions {
     runId: string, 
     toolCalls: ToolCall[]
   ) => Promise<ToolOutput[]>) | null;
+
+  /**
+   * Handler for completed runs
+   * This is called when a run completes successfully
+   * @param threadId Thread ID
+   * @param runId Run ID
+   * @param result Processing result
+   */
+  handleRunCompleted?: ((
+    threadId: string,
+    runId: string,
+    result: ProcessingResult
+  ) => Promise<void>) | null;
 }
 
 /**
