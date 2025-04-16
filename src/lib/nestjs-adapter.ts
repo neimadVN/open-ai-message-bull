@@ -173,6 +173,10 @@ export const assistantMessageQueueFactory = (options: AssistantMessageQueueOptio
  *       handleRequiresAction: async (threadId, runId, toolCalls) => {
  *         // Handle function calls
  *         return [];
+ *       },
+ *       handleRunCompleted: async (threadId, runId, result) => {
+ *         // Handle completed runs
+ *         console.log(`Run ${runId} completed for thread ${threadId}`);
  *       }
  *     })
  *   ],
