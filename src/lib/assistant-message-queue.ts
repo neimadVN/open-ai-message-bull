@@ -397,6 +397,22 @@ export class AssistantMessageQueue {
       // Remove jobIds from index
       await this.removeJobsFromThreadIndex(threadId, jobIds);
       
+      // Fetch the latest assistant messages after the run completes
+      const messagesResponse = await this.listMessages(threadId, { 
+        limit: 10,
+        order: 'desc'
+      });
+      
+      // Filter to get only assistant messages
+      const assistantMessages = messagesResponse.data
+        .filter(message => message.role === 'assistant')
+        .map(message => ({
+          id: message.id,
+          content: message.content,
+          role: message.role,
+          created_at: message.created_at
+        }));
+      
       // Check for newer jobs that were created during processing
       const newerJobs = await this.getNewerJobsByThreadId(threadId, maxTimestamp);
       if (newerJobs.length > 0 && newerJobs[0]) {
@@ -410,7 +426,8 @@ export class AssistantMessageQueue {
         messagesProcessed: jobs.length,
         processedJobIds: jobIds,
         runId: run.id,
-        status
+        status,
+        assistantMessages
       };
       
       // Call handleRunCompleted if it exists

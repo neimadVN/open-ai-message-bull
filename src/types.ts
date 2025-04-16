@@ -225,6 +225,16 @@ export interface ProcessingResult {
    * Status of the run
    */
   status: string;
+  
+  /**
+   * The assistant's response message(s)
+   */
+  assistantMessages?: Array<{
+    id: string;
+    content: any[];
+    role: string;
+    created_at: number;
+  }>;
 }
 
 /**
